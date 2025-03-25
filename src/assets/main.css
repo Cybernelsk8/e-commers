@@ -1,0 +1,25 @@
+@import './base.css';
+@import 'tailwindcss';
+
+@font-face {
+    font-family: Montserrat;
+    font-style: normal;
+    font-display: swap;
+    src: url("./fonts/Montserrat/Montserrat-VariableFont_wght.ttf") format("woff2");
+}
+
+
+
+@theme {
+    --default-font-family: 'Montserrat', sans-serif;
+    --color-color-1: #FF5B04 ; /*color de navbar y footer*/
+    --color-color-2: #075056 ;
+    --color-color-3: #14D47C ;
+    --color-color-4: #233038 ;
+    --color-color-5: #FDF6E3 ; /*color de fondo*/
+    --color-color-6: #D3DBDD ;
+}
+
+
+
+
