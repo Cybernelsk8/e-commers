@@ -34,7 +34,7 @@
                 <p>{{ store.product.description }}</p>
                 <strong>Q. {{ store.product.price }}.00</strong>
                 <br>
-                <Button text="Add to Cart" class="btn-primary" icon="fas fa-cart-shopping" />
+                <Button text="Agregar al carrito" class="btn-primary" icon="fas fa-cart-shopping" />
             </Card>
         </div>
     </section>

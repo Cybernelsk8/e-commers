@@ -1,25 +1,57 @@
 <script setup>
-    import { ref } from 'vue';
+    import { onBeforeMount, ref } from 'vue';
+    import { useGlobalStore } from '@/stores/global'
     import Carousel from './Carousel.vue'
+    import axios from 'axios'
 
     const props = defineProps({
         title : {
             type : String,
             default : ''
         },
-        data : {
-            type : Array,
-            default : () => []
-        },
-        loading : {
-            type : Boolean,
-            default : false
-        },
-        handleNextProducts : {
-            type : Function,
-            default : () => {}
+        categoryId : {
+            type : Number,
+            default : 1
         },
     })
+
+    const pagination = ref({
+        offset : 0,
+        limit : 10,
+    })
+
+    const global = useGlobalStore()
+
+    const products = ref([])
+    const loading = ref(false)
+    const errors = ref({})
+
+    const fetchProducts = async () => {
+        loading.value = true
+        try {
+            const response = await axios.get('products', {
+                params : {
+                    categoryId : props.categoryId,
+                    offset : pagination.value.offset,
+                    limit : pagination.value.limit,
+                }
+            })
+            products.value = products.value.concat(response.data)
+        } catch (error) {
+            global.manejarError(error)
+            if(error.status === 422) {
+                errors.value = error.response.data.errors
+            }
+        } finally {
+            loading.value = false
+        }
+    }
+
+    const getNextProducts = async () => {
+        pagination.value.page++
+        pagination.value.offset = pagination.value.offset + pagination.value.limit
+        fetchProducts()
+    }
 
     const emit = defineEmits(['getDetails']);
 
@@ -39,6 +71,10 @@
         scrollContainer.value.scrollLeft -= (256 * cntScroll)
     }
 
+    onBeforeMount(() => {
+        fetchProducts()
+    })
+
 </script>
 
 <template>
@@ -48,23 +84,27 @@
             {{ props.title }}
         </h3>
         <div ref="scrollContainer" class="flex items-center gap-2 overflow-x-auto no-scrollbar scroll-smooth py-3">
-            <Card v-for="item in props.data" @click="handleClick(item.slug)" class="bg-white shrink-0 w-[16rem] h-auto p-2 hover:shadow-lg shadow-color-2/40 hover:cursor-pointer ">
+            <Card v-for="product in products" @click="handleClick(product.slug)" class="bg-white shrink-0 w-[16rem] h-auto p-2 hover:shadow-lg shadow-color-2/40 hover:cursor-pointer ">
                 <template #header>
-                     <Carousel :images="item.images" class="h-40" :showCtrl="false"/>
+                     <Carousel :images="product.images" class="h-40" :showCtrl="false"/>
                 </template>
                 <div class="text-center text-color-2">
-                    <p class="text-xs font-medium">{{ item.title }}</p>
-                    <p class="text-color-1">Q. {{ item.price }}.00</p>
+                    <p class="text-xs font-medium">{{ product.title }}</p>
+                    <p class="text-color-1">Q. {{ product.price }}.00</p>
                 </div>
                 <template #footer>
                     <div class="flex gap-1 text-color-6">
-                        <Icon icon="fas fa-heart" class="icon-btn"/>
-                        <Icon icon="fas fa-cart-shopping" class="icon-btn"/>
+                        <Icon icon="fas fa-heart" class="icon-btn hover:text-red-500" title="Agregar a favoritos"/>
+                        <Icon icon="fas fa-cart-shopping" class="icon-btn hover:text-color-1" title="Agregar al carrito"/>
                     </div>
                 </template>
             </Card>
-            <Button text="Load More" @click="props.handleNextProducts" class="btn-primary text-nowrap" icon="fas fa-plus"/>
-            <div v-if="props.loading" class="flex gap-2">
+            <Card class="bg-white shrink-0 w-[16rem] h-auto p-2">
+                <div class="bg-color-2/40 h-54 flex items-center justify-center">
+                    <Button text="Cargar mas" @click="getNextProducts" class="btn-primary text-nowrap animate-pulse" icon="fas fa-plus"/>
+                </div>
+            </Card>
+            <div v-if="loading" class="flex gap-2">
                 <Card v-for="i in 5"  class="bg-white shrink-0 w-[16rem] h-auto p-2">
                     <div class="animate-pulse">
                         <div class="bg-color-2/40 h-40"></div>
@@ -81,6 +121,6 @@
 
 <style scoped>
     .icon-btn {
-        @apply hover:scale-125;
+        @apply hover:scale-110;
     }
 </style>

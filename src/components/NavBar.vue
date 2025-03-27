@@ -28,10 +28,10 @@
             </div>
             <div class="flex space-x-2 ">
                 <Tool-Tip message="Favoritos" class="mt-6 text-xs">
-                    <Icon icon="fas fa-heart" class="hover:scale-110 cursor-pointer"/>
+                    <Icon icon="fas fa-heart" class="hover:scale-110 hover:text-red-500"/>
                 </Tool-Tip>
                 <Tool-Tip message="Mi cuenta" class="mt-6 text-xs">
-                    <Icon icon="fas fa-user" class="hover:scale-110 cursor-pointer" />
+                    <Icon icon="fas fa-user" class="hover:scale-110 hover:text-color-2" />
                 </Tool-Tip>
                 <Tool-Tip message="Carrito" class="mt-6 text-xs">
                     <label class="relative cursor-pointer hover:scale-110">
