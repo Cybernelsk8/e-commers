@@ -1,4 +1,11 @@
 <script setup>
+    import axios from 'axios'
+import { ref } from 'vue'
+import { useRouter } from 'vue-router'
+import SearchProduct from './SearchProduct.vue'
+
+    const router = useRouter()
+
     const props = defineProps({
         open:{
             type: Boolean,
@@ -13,6 +20,7 @@
             default : 'fas fa-dolly'
         }
     })
+
 </script>
 
 <template>
@@ -21,10 +29,10 @@
             <div class="flex items-center gap-2">
                 <Icon icon="fas fa-bars" class="cursor-pointer hover:scale-110" />
                 <Icon :icon="props.logo" class="text-4xl" />
-                <h1 class="font-bold">{{ props.title }}</h1>
+                <h1 @click="router.push('/')" class="font-bold cursor-pointer select-none">{{ props.title }}</h1>
             </div>
             <div class="flex-1 text-base">
-                <Input icon="search" type="search" :placeholder="`Buscar en ${props.title}`" />
+                <SearchProduct :title="props.title" />
             </div>
             <div class="flex space-x-2 ">
                 <Tool-Tip message="Favoritos" class="mt-6 text-xs">
@@ -44,5 +52,4 @@
             </div>
         </div>
     </nav>
-   
 </template>

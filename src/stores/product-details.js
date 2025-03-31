@@ -8,13 +8,13 @@ export const useProductDetailsStore = defineStore('product-details', () => {
     const global = useGlobalStore()
     const product = ref({})
     const loading = ref({
-        show : false,
+        fetch : false,
     })
     const errors = ref({})
     const image = ref(null)
 
-    const show = async (slug) => {
-        loading.value.show = true
+    const fetch = async (slug) => {
+        loading.value.fetch = true
         try {
             const response = await axios.get('products/slug/'+slug)
             product.value = response.data
@@ -25,17 +25,17 @@ export const useProductDetailsStore = defineStore('product-details', () => {
                 errors.value = error.response.data.errors
             }
         } finally {
-            loading.value.show = false
+            loading.value.fetch = false
         }
     }
+
     
     return {
-
         product,
         loading,
         errors,
         image,
         
-        show
+        fetch,
     }
 })
